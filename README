@@ -1,0 +1,37 @@
+spamclassifier.py uses Pythons SciKit Learn (sklearn) to train a Spam
+classifier using the Enron spam data set (http://www2.aueb.gr/users/ion/data/enron-spam/).
+It then tests the classifier on 4 messages.
+
+aes.py is the beginning of a classifier for Automated Essay Scoring. It uses
+data from the essays folder, which is a collection of essays from a machine learning
+contest from Kaggle. This data has been anonymized, but it is probably still somehow
+proprietary so please don't share it. The given code parses the tab-separated file (.tsv)
+into:
+* an essay_id (basically a number)
+* the essay itself (which we parse using nltk)
+* the score rater1 gave the essay
+* the score rater2 gave the essay
+* the total score (which is rater1+rater2)
+
+You can see the essays here:
+
+https://docs.google.com/spreadsheets/d/1Vp1DScZXbBjxgyF7eSdUjYp3ZXmB5YAi1hOjFMwY9Qc
+
+Your goal is to build a Naive Bayes classifier and see what happens if you classify
+these essays by each rater and by the total score. How accurately can you replicate
+the human evaluators simply by looking at the words used in each essay?
+
+Notes:
+* You can use Python 3 with this assignment
+* You need to use pip or pip3 to install a number of packages:
+  - numpy
+  - scipy
+  - sklearn
+  - nltk
+  - codecs (which you might already have)
+
+On a Mac, use:
+
+sudo pip install numpy
+
+On Windows, I have no idea; use Google to find out.
