@@ -1,5 +1,5 @@
 import nltk
-nltk.download('punkt')
+#nltk.download('punkt')
 import csv
 import codecs
 from sklearn.naive_bayes import MultinomialNB
@@ -110,5 +110,13 @@ def readessays(filename):
     guess = clf.predict(testvectors)
     print(guess)
     print(testlabels)
+
+    #get the % accuracy of the tests
+    count = 0
+    for index in range(len(guess)):
+        if guess[index] == testlabels[index]:
+            count += 1
+    percentacc = float(count) / float(len(guess))
+    print 100* percentacc, "% Accuracy"
 if __name__ == '__main__':
     readessays('essays/essays1.tsv')
