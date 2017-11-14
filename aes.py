@@ -1,4 +1,5 @@
 import nltk
+nltk.download('punkt')
 import csv
 import codecs
 from sklearn.naive_bayes import MultinomialNB
@@ -33,6 +34,7 @@ def readessays(filename):
     # had to use codecs to open the file and ignore non-utf8 characters like the copyright symbol
     with codecs.open(filename, "r", encoding='ascii', errors='ignore') as csvfile:
         infile = csv.DictReader(csvfile, delimiter='\t', quotechar='"')
+        wordlist = set()
 
         for row in infile:
             essay_id = row['essay_id']
@@ -46,13 +48,67 @@ def readessays(filename):
             tokens = nltk.word_tokenize(text)
             text = nltk.Text(tokens)
 
-            print("essay {} has {} words".format(essay_id, len(text)))
+            #print("essay {} has {} words".format(essay_id, len(text)))
 
             # use a regular foreach loop to go through text:
             for word in text:
                 # print(word)
-                pass
+                if word not in wordlist:
+                    wordlist.add(word)
+    indexmap = makewordindex(wordlist)
 
+    trainingdata = []
+    labels = []
+    with codecs.open(filename, "r", encoding='ascii', errors='ignore') as csvfile:
+        infile = csv.DictReader(csvfile, delimiter='\t', quotechar='"')
+        for row in infile:
+            essay_id = row['essay_id']
+            text = row['essay']
+            score1 = row['rater1']
+            score2 = row['rater2']
+            totalscore = row['total']
 
+            # using nltk (natural language toolkit, for natural language processing)
+            # to help with parsing words out of each essay
+            tokens = nltk.word_tokenize(text)
+            text = nltk.Text(tokens)
+
+            vector = [0] * len(indexmap)
+            for word in text:
+                index = indexmap[word]
+                vector[index] += 1
+            trainingdata.append(vector)
+            labels.append(score1)
+
+    clf = MultinomialNB()
+    clf.fit(trainingdata,labels)
+
+    testvectors = []
+    testlabels = []
+    with codecs.open('essays/validation1.tsv', "r", encoding='ascii', errors='ignore') as csvfile:
+        infile = csv.DictReader(csvfile, delimiter='\t', quotechar='"')
+        for row in infile:
+            essay_id = row['essay_id']
+            text = row['essay']
+            score1 = row['rater1']
+            score2 = row['rater2']
+            totalscore = row['total']
+
+            # using nltk (natural language toolkit, for natural language processing)
+            # to help with parsing words out of each essay
+            tokens = nltk.word_tokenize(text)
+            text = nltk.Text(tokens)
+
+            vector = [0] * len(indexmap)
+            for word in text:
+                if word not in indexmap:
+                    continue
+                index = indexmap[word]
+                vector[index] += 1
+            testvectors.append(vector)
+            testlabels.append(score1)
+    guess = clf.predict(testvectors)
+    print(guess)
+    print(testlabels)
 if __name__ == '__main__':
     readessays('essays/essays1.tsv')
