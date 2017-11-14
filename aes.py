@@ -49,7 +49,6 @@ def readessays(filename):
             text = nltk.Text(tokens)
 
             #print("essay {} has {} words".format(essay_id, len(text)))
-
             # use a regular foreach loop to go through text:
             for word in text:
                 # print(word)
@@ -118,5 +117,7 @@ def readessays(filename):
             count += 1
     percentacc = float(count) / float(len(guess))
     print 100* percentacc, "% Accuracy"
+
+
 if __name__ == '__main__':
     readessays('essays/essays1.tsv')
